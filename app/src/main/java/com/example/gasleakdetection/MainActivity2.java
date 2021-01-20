@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,11 +24,13 @@ public class MainActivity2 extends AppCompatActivity {
     TextView dataReceived;
     ProgressBar PB2;
     TextView dataReceived2;
+    HorizontalScrollView HSView;
+    LinearLayout LinLayHScroll;
     long CHANNEL_ID= 1277610;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity);
         getSupportActionBar().hide();
         dataReceived = (TextView) findViewById(R.id.dataReceived);
         PB = (ProgressBar) findViewById(R.id.progressBar);
@@ -36,6 +40,8 @@ public class MainActivity2 extends AppCompatActivity {
         PB2.setProgress(0);
         tsChannel = new ThingSpeakChannel(CHANNEL_ID);
         botton= (Button) findViewById(R.id.button);
+        HSView = findViewById(R.id.Hscroll);
+        LinLayHScroll = findViewById(R.id.LinHscroll);
         tsChannel.loadChannelFeed();
 
         botton.setOnClickListener(new View.OnClickListener() {
@@ -44,18 +50,26 @@ public class MainActivity2 extends AppCompatActivity {
                 String per = tsChannel.loadLastEntryInChannelFeed();
                 if(per!=null) {
                     Log.v("ss",per+"");
-                    String[] s = per.split(" ");
-                    int num = Integer.parseInt(s[0]);
-                    dataReceived.setText(s[0]);
+                    String[] data = per.split(" ");
+                    int num = Integer.parseInt(data[0]);
+                    dataReceived.setText(data[0]);
                     PB.setProgress(num);
-                    num = Integer.parseInt(s[1]);
-                    dataReceived2.setText("Servo "+s[1]);
+                    num = Integer.parseInt(data[1]);
+                    dataReceived2.setText("Servo "+data[1]);
                     PB2.setProgress(num);
+                    addGasReading(data);
                 }
             }
         });
 
 
+
+
+    }
+    private  void  addGasReading(String[] data){
+        TextView tv = new TextView(getApplicationContext());
+        tv.setText(data[0] + "\n" + data[2]);
+        HSView.addView(tv);
     }
 
 }
